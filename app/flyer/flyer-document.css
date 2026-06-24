@@ -1,0 +1,413 @@
+.flyer-document {
+  --flyer-red: #b22234;
+  --flyer-blue: #002868;
+  --flyer-navy: #0b255f;
+  --flyer-white: #ffffff;
+  width: 8.5in;
+  margin: 0;
+  overflow: hidden;
+  background: var(--flyer-white);
+  color: var(--flyer-navy);
+  font-family: var(--font-roboto), "Roboto", "Segoe UI", sans-serif;
+  box-shadow: 0 24px 60px rgba(7, 21, 51, 0.18);
+}
+
+.flyer-flag-bar {
+  height: 7px;
+  background: linear-gradient(
+    90deg,
+    var(--flyer-red) 0%,
+    var(--flyer-red) 33.33%,
+    var(--flyer-white) 33.33%,
+    var(--flyer-white) 66.66%,
+    var(--flyer-blue) 66.66%,
+    var(--flyer-blue) 100%
+  );
+}
+
+.flyer-header {
+  position: relative;
+  padding: 0.26in 0.4in 0.2in;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 8% 28%, rgba(255, 255, 255, 0.08) 0 2px, transparent 3px),
+    linear-gradient(135deg, var(--flyer-blue) 0%, var(--flyer-navy) 100%);
+  background-size: 36px 36px, 36px 36px, auto;
+  color: var(--flyer-white);
+}
+
+.flyer-header-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1.4in;
+  height: 1.4in;
+  background: linear-gradient(145deg, rgba(178, 34, 52, 0.95) 0%, rgba(178, 34, 52, 0.55) 100%);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.flyer-eyebrow {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0.07in;
+  font-size: 0.098in;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.flyer-header h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.44in;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.flyer-tagline {
+  position: relative;
+  z-index: 1;
+  margin: 0.09in 0 0;
+  font-size: 0.148in;
+  font-weight: 700;
+  color: #bfd0ff;
+}
+
+.flyer-oneliner {
+  position: relative;
+  z-index: 1;
+  margin: 0.1in 0 0;
+  max-width: 6.6in;
+  font-size: 0.112in;
+  font-weight: 700;
+  line-height: 1.42;
+  color: var(--flyer-white);
+}
+
+.flyer-mission {
+  position: relative;
+  z-index: 1;
+  margin: 0.07in 0 0;
+  max-width: 6.4in;
+  font-size: 0.092in;
+  line-height: 1.38;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.flyer-stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.08in;
+  margin-top: 0.14in;
+}
+
+.flyer-stat {
+  padding: 0.09in 0.1in;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.flyer-stat strong {
+  display: block;
+  font-size: 0.088in;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.flyer-stat span {
+  display: block;
+  margin-top: 0.028in;
+  font-size: 0.074in;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.flyer-band {
+  padding: 0.11in 0.4in;
+}
+
+.flyer-band-blue {
+  background: rgba(0, 40, 104, 0.07);
+  border-bottom: 2px solid var(--flyer-red);
+}
+
+.flyer-band strong {
+  display: block;
+  margin-bottom: 0.035in;
+  font-size: 0.088in;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--flyer-blue);
+}
+
+.flyer-band p {
+  margin: 0;
+  font-size: 0.088in;
+  line-height: 1.38;
+  color: var(--flyer-navy);
+}
+
+.flyer-process {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.08in;
+  padding: 0.11in 0.4in;
+  background: var(--flyer-white);
+  border-bottom: 1px solid rgba(0, 40, 104, 0.08);
+}
+
+.flyer-process-step {
+  padding: 0.09in 0.1in 0.09in 0.11in;
+  border-left: 3px solid var(--flyer-red);
+  background: linear-gradient(90deg, rgba(178, 34, 52, 0.07), rgba(178, 34, 52, 0));
+}
+
+.flyer-process-step span {
+  display: block;
+  font-size: 0.074in;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--flyer-blue);
+}
+
+.flyer-process-step p {
+  margin: 0.035in 0 0;
+  font-size: 0.078in;
+  font-weight: 700;
+  line-height: 1.32;
+  color: var(--flyer-navy);
+}
+
+.flyer-body {
+  padding: 0.14in 0.4in 0.1in;
+}
+
+.flyer-body-head h2 {
+  margin: 0;
+  font-size: 0.168in;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--flyer-blue);
+}
+
+.flyer-body-head p {
+  margin: 0.05in 0 0.08in;
+  font-size: 0.088in;
+  line-height: 1.38;
+  color: var(--flyer-navy);
+}
+
+.flyer-body-head p + p {
+  margin-top: 0.05in;
+}
+
+.flyer-features-panel {
+  padding: 0.11in 0.13in;
+  border: 1px solid rgba(0, 40, 104, 0.1);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(0, 40, 104, 0.04) 0%, rgba(255, 255, 255, 0.96) 100%);
+}
+
+.flyer-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.07in 0.13in;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flyer-features li {
+  display: grid;
+  grid-template-columns: 0.18in 1fr;
+  gap: 0.06in;
+  align-items: start;
+  font-size: 0.076in;
+  line-height: 1.3;
+  color: var(--flyer-navy);
+}
+
+.flyer-feature-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.17in;
+  height: 0.17in;
+  border-radius: 999px;
+  background: var(--flyer-red);
+  color: var(--flyer-white);
+  font-size: 0.062in;
+  font-weight: 800;
+}
+
+.flyer-highlights {
+  display: grid;
+  gap: 0.07in;
+  padding: 0.1in 0.4in 0.12in;
+}
+
+.flyer-callout {
+  margin: 0;
+  padding: 0.09in 0.11in;
+  border-left: 4px solid var(--flyer-red);
+  background: rgba(178, 34, 52, 0.08);
+  font-size: 0.082in;
+  font-weight: 700;
+  line-height: 1.32;
+  color: var(--flyer-red);
+}
+
+.flyer-goal {
+  margin: 0;
+  padding: 0.08in 0.1in;
+  border-radius: 8px;
+  background: rgba(0, 40, 104, 0.08);
+  font-size: 0.082in;
+  font-weight: 700;
+  line-height: 1.32;
+  color: var(--flyer-blue);
+}
+
+.flyer-value-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.08in;
+  padding: 0.1in 0.4in 0.14in;
+  border-top: 1px solid rgba(0, 40, 104, 0.08);
+  background: linear-gradient(180deg, rgba(0, 40, 104, 0.03) 0%, rgba(178, 34, 52, 0.05) 100%);
+}
+
+.flyer-value-strip div {
+  padding: 0.09in 0.1in;
+  border-top: 3px solid var(--flyer-red);
+  border-radius: 0 0 8px 8px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.flyer-value-strip div:nth-child(2) {
+  border-top-color: var(--flyer-blue);
+}
+
+.flyer-value-strip div:nth-child(3) {
+  border-top-color: var(--flyer-red);
+}
+
+.flyer-value-strip strong {
+  display: block;
+  font-size: 0.078in;
+  font-weight: 800;
+  color: var(--flyer-blue);
+}
+
+.flyer-value-strip span {
+  display: block;
+  margin-top: 0.03in;
+  font-size: 0.07in;
+  line-height: 1.3;
+  color: var(--flyer-navy);
+}
+
+.flyer-footer {
+  padding: 0.14in 0.4in 0.12in;
+  background: linear-gradient(180deg, rgba(0, 40, 104, 0.06) 0%, rgba(0, 40, 104, 0.12) 100%);
+  border-top: 3px solid var(--flyer-red);
+}
+
+.flyer-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.12in;
+  gap: 0.12in;
+  align-items: stretch;
+}
+
+.flyer-footer-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.09in;
+}
+
+.flyer-footer-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.028in;
+}
+
+.flyer-footer-label {
+  font-size: 0.072in;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--flyer-blue);
+}
+
+.flyer-footer-block strong,
+.flyer-footer-block a {
+  font-size: 0.102in;
+  font-weight: 800;
+  color: var(--flyer-navy);
+}
+
+.flyer-footer-block a {
+  text-decoration: none;
+}
+
+.flyer-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.04in;
+  padding: 0.08in;
+  border: 1px solid rgba(0, 40, 104, 0.12);
+  border-radius: 12px;
+  background: var(--flyer-white);
+  text-align: center;
+}
+
+.flyer-qr-card img {
+  width: 0.68in;
+  height: 0.68in;
+}
+
+.flyer-qr-card strong {
+  font-size: 0.074in;
+  font-weight: 800;
+  color: var(--flyer-blue);
+}
+
+.flyer-qr-card span {
+  font-size: 0.064in;
+  line-height: 1.28;
+  color: rgba(11, 37, 95, 0.72);
+}
+
+.flyer-footer-note {
+  margin: 0.09in 0 0;
+  padding-top: 0.07in;
+  border-top: 1px solid rgba(0, 40, 104, 0.1);
+  font-size: 0.064in;
+  line-height: 1.32;
+  color: rgba(11, 37, 95, 0.68);
+}
+
+@media print {
+  @page {
+    size: 8.5in 9.15in;
+    margin: 0;
+  }
+
+  .flyer-document {
+    width: 8.5in;
+    box-shadow: none;
+  }
+}

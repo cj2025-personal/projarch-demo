@@ -1,0 +1,13 @@
+.next/
+node_modules/
+out/
+.env*
+!.env.example
+.vercel/
+coverage/
+playwright-report/
+test-results/
+*.log
+.DS_Store
+Thumbs.db
+public/concept.mp4

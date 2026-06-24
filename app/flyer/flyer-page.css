@@ -1,0 +1,15 @@
+.flyer-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #eef2f8;
+}
+
+@media print {
+  .flyer-page {
+    padding: 0;
+    background: white;
+  }
+}

@@ -1,0 +1,32 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" rx="28" fill="white"/>
+  <rect x="28" y="28" width="92" height="92" rx="10" fill="#111111"/>
+  <rect x="48" y="48" width="52" height="52" rx="6" fill="white"/>
+  <rect x="62" y="62" width="24" height="24" rx="4" fill="#111111"/>
+  <rect x="200" y="28" width="92" height="92" rx="10" fill="#111111"/>
+  <rect x="220" y="48" width="52" height="52" rx="6" fill="white"/>
+  <rect x="234" y="62" width="24" height="24" rx="4" fill="#111111"/>
+  <rect x="28" y="200" width="92" height="92" rx="10" fill="#111111"/>
+  <rect x="48" y="220" width="52" height="52" rx="6" fill="white"/>
+  <rect x="62" y="234" width="24" height="24" rx="4" fill="#111111"/>
+  <rect x="146" y="146" width="28" height="28" fill="#111111"/>
+  <rect x="174" y="174" width="28" height="28" fill="#111111"/>
+  <rect x="202" y="146" width="28" height="28" fill="#111111"/>
+  <rect x="146" y="202" width="28" height="28" fill="#111111"/>
+  <rect x="230" y="202" width="28" height="28" fill="#111111"/>
+  <rect x="258" y="174" width="28" height="28" fill="#111111"/>
+  <rect x="202" y="230" width="28" height="28" fill="#111111"/>
+  <rect x="174" y="258" width="28" height="28" fill="#111111"/>
+  <rect x="146" y="118" width="28" height="28" fill="#111111"/>
+  <rect x="118" y="146" width="28" height="28" fill="#111111"/>
+  <rect x="174" y="118" width="28" height="28" fill="#111111"/>
+  <rect x="230" y="118" width="28" height="28" fill="#111111"/>
+  <rect x="258" y="146" width="28" height="28" fill="#111111"/>
+  <rect x="118" y="258" width="28" height="28" fill="#111111"/>
+  <rect x="202" y="258" width="28" height="28" fill="#111111"/>
+  <rect x="118" y="118" width="28" height="28" fill="#111111"/>
+  <rect x="112" y="112" width="96" height="96" rx="18" fill="#0B255F" fill-opacity="0.08"/>
+  <circle cx="160" cy="160" r="30" fill="#0B255F"/>
+  <path d="M143 177C145 160 151 146 160 139C168 146 174 160 176 177H168C167 168 164 158 160 152C156 158 153 168 152 177H143Z" fill="white"/>
+  <path d="M160 139C168 146 174 160 176 177H168C167 168 164 158 160 152V139Z" fill="#E33A3D"/>
+</svg>
