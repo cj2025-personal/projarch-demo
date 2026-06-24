@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { mkdir } from "node:fs/promises";
+import { access, copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 import handler from "serve-handler";
@@ -10,36 +10,78 @@ const pdfPath = path.resolve("public/project-arch-flyer.pdf");
 const outPdfPath = path.resolve("out/project-arch-flyer.pdf");
 const baseUrl = `http://127.0.0.1:${port}`;
 
-const server = createServer((request, response) =>
-  handler(request, response, { public: siteRoot }),
-);
+async function fileExists(targetPath) {
+  try {
+    await access(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-await mkdir(path.dirname(pdfPath), { recursive: true });
+async function copyExistingPdf() {
+  if (!(await fileExists(pdfPath))) {
+    return false;
+  }
 
-await new Promise((resolve) => server.listen(port, resolve));
+  await mkdir(path.dirname(outPdfPath), { recursive: true });
+  await copyFile(pdfPath, outPdfPath);
+  return true;
+}
 
-const browser = await chromium.launch();
-const page = await browser.newPage();
+async function renderPdf() {
+  const server = createServer((request, response) =>
+    handler(request, response, { public: siteRoot }),
+  );
 
-await page.goto(`${baseUrl}/flyer`, { waitUntil: "networkidle" });
-await page.emulateMedia({ media: "print" });
-await page.pdf({
-  path: pdfPath,
-  format: "letter",
-  printBackground: true,
-  preferCSSPageSize: true,
-  margin: { top: 0, right: 0, bottom: 0, left: 0 },
-});
+  let browser;
 
-await page.pdf({
-  path: outPdfPath,
-  format: "letter",
-  printBackground: true,
-  preferCSSPageSize: true,
-  margin: { top: 0, right: 0, bottom: 0, left: 0 },
-});
+  await mkdir(path.dirname(pdfPath), { recursive: true });
+  await mkdir(path.dirname(outPdfPath), { recursive: true });
+  await new Promise((resolve) => server.listen(port, resolve));
 
-await browser.close();
-server.close();
+  try {
+    browser = await chromium.launch();
+    const page = await browser.newPage();
 
-console.log(`Flyer PDF saved to ${pdfPath}`);
+    await page.goto(`${baseUrl}/flyer`, { waitUntil: "networkidle" });
+    await page.emulateMedia({ media: "print" });
+    await page.pdf({
+      path: pdfPath,
+      format: "letter",
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: { top: 0, right: 0, bottom: 0, left: 0 },
+    });
+
+    await page.pdf({
+      path: outPdfPath,
+      format: "letter",
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: { top: 0, right: 0, bottom: 0, left: 0 },
+    });
+  } finally {
+    await browser?.close();
+    await new Promise((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+}
+
+try {
+  if (process.env.VERCEL && (await copyExistingPdf())) {
+    console.log(`Skipped PDF generation on Vercel; reused ${pdfPath}`);
+  } else {
+    await renderPdf();
+    console.log(`Flyer PDF saved to ${pdfPath}`);
+  }
+} catch (error) {
+  if (await copyExistingPdf()) {
+    console.warn(
+      `PDF generation failed; reused existing ${pdfPath}. ${error instanceof Error ? error.message : String(error)}`,
+    );
+  } else {
+    throw error;
+  }
+}
