@@ -518,8 +518,10 @@ video {
 }
 
 .hero-video {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
+  border: 0;
   border-radius: calc(var(--radius-lg) - 8px);
   background: #000000;
 }

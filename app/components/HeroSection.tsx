@@ -23,9 +23,13 @@ export function HeroSection() {
         <div className="hero-media">
           <div className="hero-player-frame" id="hero-video">
             <div className="hero-video-label">Featured concept reel</div>
-            <video className="hero-video" controls preload="metadata" playsInline>
-              <source src="/concept.mp4" type="video/mp4" />
-            </video>
+            <iframe
+              className="hero-video"
+              src="https://drive.google.com/file/d/1B_J9vEOXlKF2lC1KUneef_jBr_-AUhUk/preview"
+              title="Project Arch concept reel"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       </div>
