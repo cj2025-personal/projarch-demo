@@ -1,34 +1,21 @@
-import { FlyerDocument } from "./FlyerDocument";
 import { conceptOneLiner } from "../content/platformContent";
+import { FlyerDownloadButtons } from "./FlyerDownloadButtons";
 import { ScrollReveal } from "./ScrollReveal";
 
 export function FlyerSection() {
   return (
     <ScrollReveal as="section" className="flyer-section" id="overview-flyer">
-      <div className="container">
+      <div className="container flyer-section-download-only">
         <ScrollReveal className="flyer-section-copy" delay={60}>
           <p className="section-kicker section-kicker-red">Overview Flyer</p>
           <h2>
-            Download the Project Arch
-            <span> digital overview.</span>
+            Download the Project Arch flyer
+            <span> as a PDF.</span>
           </h2>
           <p>{conceptOneLiner}</p>
-          <p>
-            Download the full concept overview with platform features and contact
-            details for collaboration and investment conversations.
-          </p>
-          <a className="button button-primary flyer-download" href="/project-arch-flyer.pdf" download>
-            Download PDF Flyer
-          </a>
-        </ScrollReveal>
-
-        <ScrollReveal className="flyer-preview-shell" delay={160}>
-          <div aria-label="Flyer preview">
-            <div className="flyer-preview-frame">
-              <div className="flyer-preview-crop">
-                <FlyerDocument />
-              </div>
-            </div>
+          <p>The flyer is not shown on the site. Use the button below to download it.</p>
+          <div className="flyer-download-row">
+            <FlyerDownloadButtons />
           </div>
         </ScrollReveal>
       </div>

@@ -1094,9 +1094,21 @@ video {
   color: var(--ink-700);
 }
 
+.flyer-download-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
 .flyer-download {
   display: inline-flex;
-  margin-top: 32px;
+}
+
+.flyer-download-secondary {
+  border-color: rgba(7, 21, 51, 0.12);
+  color: var(--patriot-navy);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .flyer-preview-shell {
@@ -1105,28 +1117,22 @@ video {
 }
 
 .flyer-preview-frame {
+  padding: 18px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-soft);
-  background: var(--white);
+  background: linear-gradient(180deg, #ffffff 0%, #f3f6fb 100%);
   box-shadow: var(--shadow-xl);
   overflow: hidden;
 }
 
-.flyer-preview-crop {
-  width: 100%;
-  container-type: inline-size;
-  aspect-ratio: 816 / 842;
-  overflow: hidden;
-  position: relative;
+.flyer-preview-stack {
+  width: 210mm;
+  height: calc((297mm * 2 + 18mm) * 0.34);
+  transform: scale(0.34);
+  transform-origin: top left;
 }
 
-.flyer-preview-crop .flyer-document {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 816px;
-  transform-origin: top left;
-  transform: scale(calc(100cqw / 816px));
+.flyer-preview-stack .flyer-sheet {
   box-shadow: none;
 }
 
@@ -1489,7 +1495,12 @@ video {
     font-size: clamp(1.75rem, 7vw, 2.2rem);
   }
 
-  .flyer-download {
+  .flyer-download-row {
+    flex-direction: column;
+  }
+
+  .flyer-download,
+  .flyer-download-secondary {
     width: 100%;
     justify-content: center;
   }

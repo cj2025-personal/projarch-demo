@@ -5,26 +5,26 @@ export const conceptOneLiner =
   "Project Arch is an announced idea for a platform where students access scholar research and background data with AI-assisted help to build reading comprehension.";
 
 export const companyMission =
-  "Designed for K12–14 learners—not a live product today.";
+  "Designed for K12-14 learners, not a live product today.";
 
 export const conceptNote =
-  "Nothing is live yet—this page and flyer describe the concept only.";
+  "Nothing is live yet. This page and flyer describe the concept only.";
 
 export const platformFeatures = [
-  "Access to scholar research and background data from legendary legacy scholars at R1 universities.",
-  "Access to scholar research and background data from contemporary R1 researchers.",
-  "Reading comprehension challenges powered by AI and designed to improve how students understand difficult material.",
-  "Veri AI model that answers student questions based on a scholar's research and background data.",
-  "Student grade-level customization and explanation targeting to improve reading comprehension for K12–14 students.",
-  "AI-generated podcasts between scholars who share common knowledge at the intersection of their research.",
-  "Live and recorded podcasts with onboarded legacy scholars.",
-  "Scholars who get onboarded from the roster would produce editorial content for the platform.",
-  "AI-generated perspective articles from legendary scholars commenting on ongoing topics in society.",
-  "Everything designed around a student's reading level with AI used for good to support healthier, more effective comprehension and writing growth.",
+  "A Big Ten-centered scholar directory with research profiles, background context, and discovery pathways for students.",
+  "Access to both legacy scholars and contemporary researchers across major R1 university ecosystems.",
+  "Veri AI responses grounded in scholar-specific materials rather than generic chatbot output.",
+  "Grade-personalized explanations that adapt reading level, tone, and depth for K12-14 learners.",
+  "AI-assisted reading comprehension activities built to help students work through difficult texts with confidence.",
+  "AI-generated scholar-to-scholar podcast conversations that surface overlap, tension, and interdisciplinary insight.",
+  "Recorded and live audio formats that make academic knowledge more accessible and engaging.",
+  "Editorial publishing powered by both AI generation and scholar-curated contributions.",
+  "Perspective stories and commentary that connect research to current issues, culture, and public life.",
+  "A platform model designed to support healthier comprehension, stronger writing development, and more meaningful student learning.",
 ];
 
 export const featurePersonalization =
-  "All features described above would be personalized for different learning communities and groups.";
+  "Every layer of the experience is designed to adjust explanations, pacing, and context for different learners and learning communities.";
 
 export const featureGoal =
   "Our goal is to build a new American model for reading comprehension.";

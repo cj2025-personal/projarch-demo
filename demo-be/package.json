@@ -1,0 +1,7 @@
+{
+  "name": "project-arch-flyer-backend",
+  "private": true,
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}
