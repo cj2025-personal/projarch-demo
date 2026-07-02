@@ -410,16 +410,24 @@ async function withFlyerPrintOrigin(run) {
   }
 }
 
+function launchBrowser() {
+  return chromium.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+}
+
 async function generateFlyerPdf(content) {
   const encodedContent = Buffer.from(JSON.stringify(content), "utf8").toString("base64url");
 
   return withFlyerPrintOrigin(async (origin) => {
-    const browser = await chromium.launch();
+    const browser = await launchBrowser();
 
     try {
       const page = await browser.newPage();
-      await page.goto(`${origin}/flyer/print.html?data=${encodeURIComponent(encodedContent)}`, {
+      await page.goto(`${origin}/flyer/print?data=${encodeURIComponent(encodedContent)}`, {
         waitUntil: "networkidle",
+        timeout: 120_000,
       });
       await page.waitForSelector(".flyer-document");
       await page.emulateMedia({ media: "print" });
@@ -532,6 +540,8 @@ async function streamPdfFromGcs(response, pdf) {
 }
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -661,8 +671,8 @@ app.get("/api/flyers/:slug/versions/:version/pdf", async (request, response) => 
   }
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(
-    `Project Arch flyer backend listening on http://127.0.0.1:${port} using collection "${collectionName}"`,
+    `Project Arch flyer backend listening on port ${port} using collection "${collectionName}"`,
   );
 });

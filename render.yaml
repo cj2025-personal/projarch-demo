@@ -1,0 +1,32 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# After connecting the repo, set secret env vars in the Render dashboard.
+
+services:
+  - type: web
+    name: projarch-flyer-backend
+    runtime: docker
+    dockerfilePath: ./demo-be/Dockerfile
+    dockerContext: ./demo-be
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_DB
+        value: ngo_profiles
+      - key: GCP_PROJECT_ID
+        value: ngo-application-services
+      - key: GCP_LOCATION
+        value: us-central1
+      - key: BUCKET_NAME
+        value: demo-site-flyer
+      - key: FLYER_PRINT_ORIGIN
+        value: https://projarch-demo-piyn.vercel.app
+      - key: FLYER_PUBLISH_USERNAME
+        value: admin
+      - key: MONGODB_URI
+        sync: false
+      - key: GCP_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: FLYER_PUBLISH_PASSWORD
+        sync: false

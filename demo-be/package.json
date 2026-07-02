@@ -1,7 +1,20 @@
 {
   "name": "project-arch-flyer-backend",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.21.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongodb": "^6.21.0",
+    "playwright": "^1.61.0",
+    "serve-handler": "^6.1.6"
   }
 }
