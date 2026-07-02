@@ -1,6 +1,9 @@
 .flyer-page {
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 18px;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
   background:
     radial-gradient(circle at top left, rgba(79, 124, 255, 0.08), transparent 22%),
     linear-gradient(180deg, #f8fbff 0%, #eef3fb 100%);
@@ -114,14 +117,16 @@
   display: inline-flex;
   align-items: center;
   min-height: 30px;
-  padding: 0 10px;
+  max-width: 100%;
+  padding: 6px 10px;
   border: 1px solid rgba(16, 32, 63, 0.08);
   border-radius: 999px;
   background: rgba(79, 124, 255, 0.08);
   color: var(--ink-800);
   font-size: 0.78rem;
   font-weight: 700;
-  white-space: nowrap;
+  line-height: 1.35;
+  text-wrap: balance;
 }
 
 .flyer-editor-nav-actions {
@@ -134,7 +139,7 @@
 
 .flyer-editor-actions {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -359,6 +364,7 @@
 
 .flyer-preview-shell-editor .flyer-preview-frame {
   position: relative;
+  margin-inline: auto;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -492,6 +498,11 @@
   .flyer-editor-nav {
     grid-template-columns: 1fr;
     justify-items: stretch;
+    position: static;
+  }
+
+  .flyer-editor-nav-brand h1 {
+    font-size: 1.1rem;
   }
 
   .flyer-editor-nav-status {
@@ -508,27 +519,73 @@
 
   .flyer-editor-workspace-tools {
     justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .flyer-editor-tool-spread {
+    display: none;
+  }
+
+  .flyer-editor-view-spread .flyer-document-editor {
+    display: block;
+    width: 210mm;
+  }
+
+  .flyer-editor-view-spread .flyer-sheet-back {
+    display: none;
+  }
+
+  .flyer-preview-panel {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .flyer-preview-shell-editor {
+    min-width: min(100%, 210mm);
   }
 }
 
 @media (max-width: 720px) {
   .flyer-page {
-    padding: 16px;
+    padding: 12px;
+    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
   }
 
   .flyer-public-copy {
     padding: 16px 16px 0;
   }
 
+  .flyer-editor-shell {
+    gap: 10px;
+  }
+
   .flyer-editor-nav,
   .flyer-editor-section,
   .flyer-preview-shell-editor {
-    padding: 16px;
-    border-radius: 20px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .flyer-editor-nav {
+    gap: 10px;
+  }
+
+  .flyer-editor-nav-status {
+    width: 100%;
+  }
+
+  .flyer-editor-chip {
+    width: fit-content;
+    max-width: 100%;
   }
 
   .flyer-editor-actions {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
   }
 
   .flyer-editor-actions .button {
@@ -536,8 +593,10 @@
   }
 
   .flyer-editor-nav-actions {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: stretch;
+    width: 100%;
   }
 
   .flyer-editor-workspace-tools {
@@ -546,8 +605,15 @@
   }
 
   .flyer-editor-tool-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    justify-content: space-between;
+    border-radius: 16px;
+  }
+
+  .flyer-editor-tool {
+    width: 100%;
+    justify-content: center;
   }
 
   .flyer-editor-nav-menu,
@@ -557,14 +623,42 @@
   }
 
   .flyer-editor-versions-popover {
-    right: auto;
-    left: 0;
+    position: fixed;
+    inset: auto 12px 12px 12px;
+    top: auto;
+    width: auto;
+    max-height: min(60vh, 420px);
+    overflow: auto;
+    z-index: 60;
+  }
+
+  .flyer-editor-history-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .flyer-editor-history-item .button {
     width: 100%;
   }
 
+  .flyer-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flyer-login-shell {
+    align-items: flex-start;
+    min-height: auto;
+    padding-top: 12px;
+  }
+
   .flyer-login-card {
+    width: 100%;
     padding: 20px;
     border-radius: 20px;
+  }
+
+  .flyer-preview-shell-editor {
+    padding: 10px;
   }
 }
 

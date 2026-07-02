@@ -80,6 +80,12 @@ async function uploadFlyerPdf(slug: string, version: number, pdfBuffer: Buffer) 
   };
 
   await file.save(pdfBuffer, uploadOptions);
+
+  const [exists] = await file.exists();
+  if (!exists) {
+    throw new Error(`Uploaded flyer PDF was not found in ${bucketName}/${objectKey}.`);
+  }
+
   const [metadata] = await file.getMetadata();
 
   return {

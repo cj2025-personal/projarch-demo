@@ -10,7 +10,8 @@
     "start:backend": "node demo-be/server.mjs",
     "capture:ui": "node scripts/capture-ui.mjs",
     "generate:flyer": "node scripts/generate-flyer-pdf.mjs",
-    "generate:qr": "node scripts/generate-qr-assets.mjs"
+    "generate:qr": "node scripts/generate-qr-assets.mjs",
+    "cleanup:flyer-versions": "node scripts/cleanup-flyer-versions.mjs"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.21.0",

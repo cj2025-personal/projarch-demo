@@ -32,11 +32,15 @@ export async function GET(
       },
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to stream flyer PDF.";
+
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Unable to stream flyer PDF.",
+        error: message.includes("No such object")
+          ? "The latest flyer PDF is missing from storage. Open the editor and publish again to regenerate it."
+          : message,
       },
-      { status: 500 },
+      { status: message.includes("No such object") ? 404 : 500 },
     );
   }
 }

@@ -243,6 +243,23 @@ export function FlyerEditor() {
       : FLYER_PAGE_WIDTH_PX;
 
   useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px)");
+
+    const syncCanvasView = () => {
+      if (media.matches) {
+        setCanvasView((current) => (current === "spread" ? "page1" : current));
+      }
+    };
+
+    syncCanvasView();
+    media.addEventListener("change", syncCanvasView);
+
+    return () => {
+      media.removeEventListener("change", syncCanvasView);
+    };
+  }, []);
+
+  useEffect(() => {
     const shell = previewShellRef.current;
     if (!shell) {
       return;
@@ -254,7 +271,7 @@ export function FlyerEditor() {
         Number.parseFloat(styles.paddingLeft) + Number.parseFloat(styles.paddingRight);
       const availableWidth = Math.max(shell.clientWidth - horizontalPadding, 1);
       const nextScale = Math.min(1, availableWidth / canvasBaseWidth);
-      setFitScale(nextScale);
+      setFitScale(Number(nextScale.toFixed(4)));
     };
 
     updateFitScale();
@@ -414,7 +431,7 @@ export function FlyerEditor() {
             </button>
             <button
               aria-selected={canvasView === "spread"}
-              className={`flyer-editor-tool${
+              className={`flyer-editor-tool flyer-editor-tool-spread${
                 canvasView === "spread" ? " flyer-editor-tool-active" : ""
               }`}
               onClick={() => setCanvasView("spread")}
