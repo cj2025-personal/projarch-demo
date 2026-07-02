@@ -214,6 +214,7 @@ export function FlyerEditor() {
 
     try {
       writeStoredFlyerContent(content);
+      setPublishMessage("Generating PDF in your browser...");
       const publishedVersion = await publishFlyerContent(content);
       setContent(publishedVersion.content);
       setLatestVersion(publishedVersion.version);

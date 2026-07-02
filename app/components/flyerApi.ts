@@ -1,6 +1,10 @@
 "use client";
 
 import type { FlyerContent } from "../content/flyerContent";
+import {
+  flyerPdfBytesToBase64,
+  generateFlyerPdfClient,
+} from "./generateFlyerPdfClient";
 
 export const flyerSlug = "project-arch";
 
@@ -16,33 +20,8 @@ export type FlyerVersionResponse = {
 
 export type FlyerVersionSummary = Omit<FlyerVersionResponse, "content">;
 
-function trimTrailingSlash(value: string) {
-  return value.replace(/\/+$/, "");
-}
-
-export function getFlyerApiBaseUrl() {
-  const configuredBaseUrl = process.env.NEXT_PUBLIC_FLYER_API_BASE_URL?.trim();
-  if (configuredBaseUrl) {
-    return trimTrailingSlash(configuredBaseUrl);
-  }
-
-  if (typeof window === "undefined") {
-    return "";
-  }
-
-  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    return "http://localhost:8003";
-  }
-
-  return trimTrailingSlash(window.location.origin);
-}
-
-export function getLatestFlyerPdfUrl() {
-  return `${getFlyerApiBaseUrl()}/api/flyers/${flyerSlug}/latest.pdf`;
-}
-
 function getLatestFlyerMetadataUrl() {
-  return `${getFlyerApiBaseUrl()}/api/flyers/${flyerSlug}`;
+  return `/api/flyers/${flyerSlug}`;
 }
 
 function getPublishFlyerUrl() {
@@ -51,6 +30,10 @@ function getPublishFlyerUrl() {
 
 function getFlyerVersionsUrl() {
   return `/api/flyers/${flyerSlug}/versions`;
+}
+
+export function getLatestFlyerPdfUrl() {
+  return `/api/flyers/${flyerSlug}/latest.pdf`;
 }
 
 export async function fetchLatestFlyerVersion() {
@@ -73,13 +56,19 @@ export async function fetchLatestFlyerVersion() {
 }
 
 export async function publishFlyerContent(content: FlyerContent) {
+  const pdfBytes = await generateFlyerPdfClient(content);
+  const pdfBase64 = flyerPdfBytesToBase64(pdfBytes);
+
   const response = await fetch(getPublishFlyerUrl(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({
+      content,
+      pdfBase64,
+    }),
   });
 
   if (!response.ok) {

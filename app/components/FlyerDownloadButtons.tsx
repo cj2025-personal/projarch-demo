@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getLatestFlyerPdfUrl } from "./flyerApi";
-
 type FlyerDownloadButtonsProps = {
   includeFlyerPageLink?: boolean;
 };
@@ -10,11 +7,7 @@ type FlyerDownloadButtonsProps = {
 export function FlyerDownloadButtons({
   includeFlyerPageLink = true,
 }: FlyerDownloadButtonsProps) {
-  const [downloadUrl, setDownloadUrl] = useState("/api/flyers/project-arch/latest.pdf");
-
-  useEffect(() => {
-    setDownloadUrl(getLatestFlyerPdfUrl());
-  }, []);
+  const downloadUrl = "/api/flyers/project-arch/latest.pdf";
 
   return (
     <>

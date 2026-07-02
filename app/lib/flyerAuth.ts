@@ -4,10 +4,6 @@ export const flyerEditorPath = "/flyer/edit";
 export const flyerEditorLoginPath = `${flyerEditorPath}/login`;
 export const flyerEditorSessionCookieName = "flyer_editor_session";
 
-function trimTrailingSlash(value: string) {
-  return value.replace(/\/+$/, "");
-}
-
 function safeEqual(left: string, right: string) {
   const leftBuffer = Buffer.from(left, "utf8");
   const rightBuffer = Buffer.from(right, "utf8");
@@ -39,23 +35,4 @@ export function createFlyerEditorSessionToken() {
 
 export function hasValidFlyerEditorSessionToken(value: string | undefined) {
   return typeof value === "string" && safeEqual(value, createFlyerEditorSessionToken());
-}
-
-export function getFlyerApiBaseUrl() {
-  const configuredBaseUrl =
-    process.env.FLYER_API_BASE_URL?.trim() ||
-    process.env.NEXT_PUBLIC_FLYER_API_BASE_URL?.trim();
-
-  if (configuredBaseUrl) {
-    return trimTrailingSlash(configuredBaseUrl);
-  }
-
-  return "http://localhost:8003";
-}
-
-export function getFlyerPublishAuthorizationHeader() {
-  const username = process.env.FLYER_PUBLISH_USERNAME?.trim() || getEditorUsername();
-  const password = process.env.FLYER_PUBLISH_PASSWORD?.trim() || getEditorPassword();
-  const encoded = Buffer.from(`${username}:${password}`, "utf8").toString("base64");
-  return `Basic ${encoded}`;
 }
