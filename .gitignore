@@ -11,3 +11,7 @@ test-results/
 .DS_Store
 Thumbs.db
 public/concept.mp4
+demo-be/config/key.json
+demo-be/backend.out.log
+demo-be/backend.err.log
+tsconfig.tsbuildinfo

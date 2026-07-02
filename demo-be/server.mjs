@@ -1,18 +1,14 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { Storage } from "@google-cloud/storage";
 import { randomUUID, timingSafeEqual } from "node:crypto";
+import { existsSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { access } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  HeadBucketCommand,
-  CreateBucketCommand,
-} from "@aws-sdk/client-s3";
 import { MongoClient } from "mongodb";
 import { chromium } from "playwright";
 import handler from "serve-handler";
@@ -21,6 +17,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+function configureGcpCredentials() {
+  const inlineJson = process.env.GCP_SERVICE_ACCOUNT_JSON?.trim();
+  if (inlineJson) {
+    const credentialsPath = path.join(tmpdir(), "gcp-service-account.json");
+    writeFileSync(credentialsPath, inlineJson, "utf8");
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+    return credentialsPath;
+  }
+
+  const configuredPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
+  if (configuredPath) {
+    const resolvedPath = path.isAbsolute(configuredPath)
+      ? configuredPath
+      : path.resolve(__dirname, configuredPath);
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = resolvedPath;
+    return resolvedPath;
+  }
+
+  const defaultKeyPath = path.resolve(__dirname, "config", "key.json");
+  if (existsSync(defaultKeyPath)) {
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = defaultKeyPath;
+    return defaultKeyPath;
+  }
+
+  throw new Error(
+    "Missing GCP credentials. Set GCP_SERVICE_ACCOUNT_JSON or GOOGLE_APPLICATION_CREDENTIALS.",
+  );
+}
 
 const flyerSlug = "project-arch";
 const collectionName = process.env.FLYER_COLLECTION_NAME?.trim() || "flyer_versions";
@@ -272,16 +297,14 @@ function isAuthorizedPublishRequest(request) {
   return safeEqual(encodedCredentials, expectedCredentials);
 }
 
+configureGcpCredentials();
+
 const mongoClient = new MongoClient(requireEnv("MONGODB_URI"));
 const dbName = requireEnv("MONGODB_DB");
 const bucketName = requireEnv("BUCKET_NAME");
-const s3Client = new S3Client({
-  region: requireEnv("AWS_REGION"),
-  credentials: {
-    accessKeyId: requireEnv("AWS_ACCESS_KEY_ID"),
-    secretAccessKey: requireEnv("AWS_SECRET_ACCESS_KEY"),
-  },
-});
+const gcpProjectId = requireEnv("GCP_PROJECT_ID");
+const storage = new Storage({ projectId: gcpProjectId });
+const gcsBucket = storage.bucket(bucketName);
 
 await mongoClient.connect();
 
@@ -422,66 +445,48 @@ async function generateFlyerPdf(content) {
 
 async function uploadFlyerPdf(slug, version, pdfBuffer) {
   const objectKey = `flyers/${slug}/versions/v${version}-${Date.now()}-${randomUUID()}.pdf`;
-  const command = new PutObjectCommand({
-    Bucket: bucketName,
-    Key: objectKey,
-    Body: pdfBuffer,
-    ContentType: "application/pdf",
-    CacheControl: "no-store",
-    Metadata: {
-      slug,
-      version: String(version),
+  const file = gcsBucket.file(objectKey);
+  const uploadOptions = {
+    contentType: "application/pdf",
+    metadata: {
+      cacheControl: "no-store",
+      metadata: {
+        slug,
+        version: String(version),
+      },
     },
-  });
-
-  let result;
+  };
 
   try {
-    result = await s3Client.send(command);
+    await file.save(pdfBuffer, uploadOptions);
   } catch (error) {
-    if (error?.name !== "NoSuchBucket") {
+    if (error?.code !== 404) {
       throw error;
     }
 
     await ensureBucketExists();
-    result = await s3Client.send(command);
+    await file.save(pdfBuffer, uploadOptions);
   }
+
+  const [metadata] = await file.getMetadata();
 
   return {
     bucket: bucketName,
     contentType: "application/pdf",
-    etag: result.ETag ?? null,
+    etag: metadata.etag ?? null,
     key: objectKey,
     size: pdfBuffer.byteLength,
   };
 }
 
 async function ensureBucketExists() {
-  try {
-    await s3Client.send(
-      new HeadBucketCommand({
-        Bucket: bucketName,
-      }),
-    );
+  const [exists] = await gcsBucket.exists();
+  if (exists) {
     return;
-  } catch (error) {
-    if (error?.name !== "NotFound" && error?.name !== "NoSuchBucket") {
-      throw error;
-    }
   }
 
-  const region = requireEnv("AWS_REGION");
-  const bucketCommand =
-    region === "us-east-1"
-      ? new CreateBucketCommand({ Bucket: bucketName })
-      : new CreateBucketCommand({
-          Bucket: bucketName,
-          CreateBucketConfiguration: {
-            LocationConstraint: region,
-          },
-        });
-
-  await s3Client.send(bucketCommand);
+  const location = process.env.GCP_LOCATION?.trim() || "US";
+  await storage.createBucket(bucketName, { location });
 }
 
 async function createFlyerVersion(slug, content) {
@@ -516,18 +521,9 @@ async function createFlyerVersion(slug, content) {
   throw new Error("Unable to allocate a new flyer version after multiple attempts.");
 }
 
-async function streamPdfFromS3(response, pdf) {
-  const object = await s3Client.send(
-    new GetObjectCommand({
-      Bucket: pdf.bucket,
-      Key: pdf.key,
-    }),
-  );
-
-  const stream = object.Body;
-  if (!stream || typeof stream.pipe !== "function") {
-    throw new Error("Unable to stream flyer PDF from storage.");
-  }
+async function streamPdfFromGcs(response, pdf) {
+  const file = storage.bucket(pdf.bucket).file(pdf.key);
+  const stream = file.createReadStream();
 
   response.setHeader("Content-Type", pdf.contentType || "application/pdf");
   response.setHeader("Cache-Control", "no-store");
@@ -630,7 +626,7 @@ app.get("/api/flyers/:slug/latest.pdf", async (request, response) => {
       "Content-Disposition",
       `attachment; filename="${document.slug}-flyer-latest.pdf"`,
     );
-    await streamPdfFromS3(response, document.pdf);
+    await streamPdfFromGcs(response, document.pdf);
   } catch (error) {
     response.status(500).json({
       error: error instanceof Error ? error.message : "Unable to stream flyer PDF.",
@@ -657,7 +653,7 @@ app.get("/api/flyers/:slug/versions/:version/pdf", async (request, response) => 
       "Content-Disposition",
       `attachment; filename="${document.slug}-flyer-v${document.version}.pdf"`,
     );
-    await streamPdfFromS3(response, document.pdf);
+    await streamPdfFromGcs(response, document.pdf);
   } catch (error) {
     response.status(500).json({
       error: error instanceof Error ? error.message : "Unable to stream flyer PDF.",
