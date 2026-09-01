@@ -4,18 +4,26 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { flyerEditorPath } from "../lib/flyerAuth";
 
-function resolveNextPath(value: string | null) {
+function resolveNextPath(value: string | null, fallbackPath: string) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return flyerEditorPath;
+    return fallbackPath;
   }
 
   return value;
 }
 
-export function FlyerEditorLogin() {
+type FlyerEditorLoginProps = {
+  defaultNextPath?: string;
+  title?: string;
+};
+
+export function FlyerEditorLogin({
+  defaultNextPath = flyerEditorPath,
+  title = "Flyer editor sign in",
+}: FlyerEditorLoginProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = resolveNextPath(searchParams.get("next"));
+  const nextPath = resolveNextPath(searchParams.get("next"), defaultNextPath);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,7 +79,7 @@ export function FlyerEditorLogin() {
     <section className="flyer-login-shell">
       <div className="flyer-login-card">
         <p className="flyer-editor-kicker">Private Access</p>
-        <h1>Flyer editor sign in</h1>
+        <h1>{title}</h1>
         <p>Use the editor credentials to open the private publishing workspace.</p>
 
         {errorMessage ? <p className="flyer-editor-error">{errorMessage}</p> : null}

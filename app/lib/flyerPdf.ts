@@ -1,4 +1,4 @@
-import type { FlyerContent } from "../content/flyerContent";
+import type { AnyFlyerContent } from "./flyerRegistry";
 
 export function getFlyerPrintOrigin() {
   const configuredOrigin = process.env.FLYER_PRINT_ORIGIN?.trim();
@@ -42,8 +42,8 @@ async function renderPdfWithPlaywright(printUrl: string) {
   }
 }
 
-export async function generateFlyerPdf(content: FlyerContent) {
+export async function generateFlyerPdf(content: AnyFlyerContent, printPath: string) {
   const encodedContent = Buffer.from(JSON.stringify(content), "utf8").toString("base64url");
-  const printUrl = `${getFlyerPrintOrigin()}/flyer/print?data=${encodeURIComponent(encodedContent)}`;
+  const printUrl = `${getFlyerPrintOrigin()}${printPath}?data=${encodeURIComponent(encodedContent)}`;
   return renderPdfWithPlaywright(printUrl);
 }

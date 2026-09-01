@@ -36,12 +36,26 @@ export async function POST(
 
   try {
     const { slug } = await context.params;
-    const body = (await request.json()) as { content?: unknown; pdfBase64?: string };
+    const body = (await request.json()) as {
+      content?: unknown;
+      pdfBase64?: string;
+      pagePdfsBase64?: unknown;
+    };
     const pdfBuffer =
       typeof body.pdfBase64 === "string" && body.pdfBase64.length > 0
         ? Buffer.from(body.pdfBase64, "base64")
         : undefined;
-    const createdVersion = await createFlyerVersion(slug, body.content ?? body, pdfBuffer);
+    const pagePdfBuffers =
+      Array.isArray(body.pagePdfsBase64) &&
+      body.pagePdfsBase64.every((item) => typeof item === "string" && item.length > 0)
+        ? (body.pagePdfsBase64 as string[]).map((item) => Buffer.from(item, "base64"))
+        : undefined;
+    const createdVersion = await createFlyerVersion(
+      slug,
+      body.content ?? body,
+      pdfBuffer,
+      pagePdfBuffers,
+    );
     const origin = await getRequestOrigin();
 
     return NextResponse.json(buildFlyerResponse(origin, createdVersion), {

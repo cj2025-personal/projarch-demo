@@ -681,3 +681,9 @@
     box-shadow: none;
   }
 }
+
+.flyer-editor-history-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}

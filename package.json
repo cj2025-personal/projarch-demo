@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node scripts/generate-flyer-pdf.mjs",
+    "postbuild": "npm run generate:flyer && npm run generate:scholar-data-flyer",
     "start": "next start",
     "start:backend": "node demo-be/server.mjs",
     "capture:ui": "node scripts/capture-ui.mjs",
     "generate:flyer": "node scripts/generate-flyer-pdf.mjs",
+    "generate:scholar-data-flyer": "node scripts/generate-flyer-pdf.mjs --route=/scholar-data/print --pdf=project-arch-scholar-data-flyer.pdf --port=3457 --optional",
     "generate:qr": "node scripts/generate-qr-assets.mjs",
     "cleanup:flyer-versions": "node scripts/cleanup-flyer-versions.mjs"
   },

@@ -2,9 +2,13 @@
 
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import type { FlyerContent } from "../content/flyerContent";
 
-function encodeFlyerContentParam(content: FlyerContent) {
+export type FlyerPdfSet = {
+  combined: Uint8Array;
+  pages: Uint8Array[];
+};
+
+function encodeFlyerContentParam(content: unknown) {
   const bytes = new TextEncoder().encode(JSON.stringify(content));
   let binary = "";
 
@@ -26,7 +30,46 @@ export function flyerPdfBytesToBase64(bytes: Uint8Array) {
   return btoa(binary);
 }
 
-export async function generateFlyerPdfClient(content: FlyerContent) {
+/** Hands a generated PDF straight to the browser as a file download. */
+export function triggerFlyerPdfDownload(bytes: Uint8Array, filename: string) {
+  const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
+}
+
+function createFlyerPdf() {
+  return new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
+}
+
+function placeSheet(pdf: jsPDF, imageData: string, aspectRatio: number) {
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const renderHeight = pageWidth * aspectRatio;
+
+  pdf.addImage(imageData, "JPEG", 0, 0, pageWidth, Math.min(renderHeight, pageHeight));
+}
+
+/**
+ * Renders the print route in a hidden iframe and captures every `.flyer-sheet`.
+ * Each sheet is rasterised once and reused for both the combined document and
+ * its own single-page document, so splitting costs no extra render work.
+ */
+export async function generateFlyerPdfSet(
+  content: unknown,
+  printPath = "/flyer/print",
+): Promise<FlyerPdfSet> {
   const iframe = document.createElement("iframe");
   iframe.setAttribute("aria-hidden", "true");
   iframe.style.cssText =
@@ -34,7 +77,7 @@ export async function generateFlyerPdfClient(content: FlyerContent) {
   document.body.appendChild(iframe);
 
   try {
-    const printUrl = `/flyer/print?data=${encodeURIComponent(encodeFlyerContentParam(content))}`;
+    const printUrl = `${printPath}?data=${encodeURIComponent(encodeFlyerContentParam(content))}`;
 
     await new Promise<void>((resolve, reject) => {
       const timeout = window.setTimeout(
@@ -71,11 +114,8 @@ export async function generateFlyerPdfClient(content: FlyerContent) {
       throw new Error("Flyer pages were not rendered.");
     }
 
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
+    const combined = createFlyerPdf();
+    const pages: Uint8Array[] = [];
 
     for (let index = 0; index < sheets.length; index += 1) {
       const canvas = await html2canvas(sheets[index], {
@@ -85,20 +125,29 @@ export async function generateFlyerPdfClient(content: FlyerContent) {
         logging: false,
       });
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
       const imageData = canvas.toDataURL("image/jpeg", 0.92);
-      const renderHeight = (canvas.height * pageWidth) / canvas.width;
+      const aspectRatio = canvas.height / canvas.width;
 
       if (index > 0) {
-        pdf.addPage();
+        combined.addPage();
       }
+      placeSheet(combined, imageData, aspectRatio);
 
-      pdf.addImage(imageData, "JPEG", 0, 0, pageWidth, Math.min(renderHeight, pageHeight));
+      const single = createFlyerPdf();
+      placeSheet(single, imageData, aspectRatio);
+      pages.push(new Uint8Array(single.output("arraybuffer")));
     }
 
-    return new Uint8Array(pdf.output("arraybuffer"));
+    return {
+      combined: new Uint8Array(combined.output("arraybuffer")),
+      pages,
+    };
   } finally {
     iframe.remove();
   }
+}
+
+export async function generateFlyerPdfClient(content: unknown, printPath = "/flyer/print") {
+  const { combined } = await generateFlyerPdfSet(content, printPath);
+  return combined;
 }

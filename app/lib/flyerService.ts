@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { FlyerContent } from "../content/flyerContent";
+import { type AnyFlyerContent, getFlyerDefinition } from "./flyerRegistry";
 import { getBucketName, getStorageClient } from "./gcp";
 import {
   type FlyerDocument,
@@ -8,16 +8,17 @@ import {
   getLatestFlyerDocument,
 } from "./flyerDb";
 import { generateFlyerPdf } from "./flyerPdf";
-import { normalizeFlyerContent } from "./flyerNormalize";
 
 export type FlyerVersionResponse = {
   slug: string;
   version: number;
-  content: FlyerContent;
+  content: AnyFlyerContent;
   createdAt: string;
   updatedAt: string;
   latestPdfUrl: string;
   versionPdfUrl: string;
+  pageCount: number;
+  pagePdfUrls: string[];
 };
 
 export type FlyerVersionSummary = Omit<FlyerVersionResponse, "content">;
@@ -37,6 +38,13 @@ export function buildFlyerResponse(origin: string, document: FlyerDocument): Fly
     versionPdfUrl: buildAbsoluteUrl(
       origin,
       `/api/flyers/${document.slug}/versions/${document.version}/pdf`,
+    ),
+    pageCount: document.pages?.length ?? 0,
+    pagePdfUrls: (document.pages ?? []).map((_page, index) =>
+      buildAbsoluteUrl(
+        origin,
+        `/api/flyers/${document.slug}/versions/${document.version}/pdf?page=${index + 1}`,
+      ),
     ),
   };
 }
@@ -63,9 +71,15 @@ async function ensureBucketExists(bucketName: string) {
   return bucket;
 }
 
-async function uploadFlyerPdf(slug: string, version: number, pdfBuffer: Buffer) {
+async function uploadFlyerPdf(
+  slug: string,
+  version: number,
+  pdfBuffer: Buffer,
+  page?: number,
+) {
   const bucketName = getBucketName();
-  const objectKey = `flyers/${slug}/versions/v${version}-${Date.now()}-${randomUUID()}.pdf`;
+  const suffix = page ? `-page${page}` : "";
+  const objectKey = `flyers/${slug}/versions/v${version}${suffix}-${Date.now()}-${randomUUID()}.pdf`;
   const bucket = await ensureBucketExists(bucketName);
   const file = bucket.file(objectKey);
   const uploadOptions = {
@@ -75,6 +89,7 @@ async function uploadFlyerPdf(slug: string, version: number, pdfBuffer: Buffer) 
       metadata: {
         slug,
         version: String(version),
+        ...(page ? { page: String(page) } : {}),
       },
     },
   };
@@ -97,8 +112,14 @@ async function uploadFlyerPdf(slug: string, version: number, pdfBuffer: Buffer) 
   } satisfies StoredFlyerPdf;
 }
 
-export async function createFlyerVersion(slug: string, content: unknown, pdfBuffer?: Buffer) {
-  const normalizedContent = normalizeFlyerContent(content);
+export async function createFlyerVersion(
+  slug: string,
+  content: unknown,
+  pdfBuffer?: Buffer,
+  pagePdfBuffers?: Buffer[],
+) {
+  const definition = getFlyerDefinition(slug);
+  const normalizedContent = definition.normalize(content);
 
   let resolvedPdfBuffer = pdfBuffer;
   if (!resolvedPdfBuffer) {
@@ -106,7 +127,7 @@ export async function createFlyerVersion(slug: string, content: unknown, pdfBuff
       throw new Error("PDF data is required when publishing on Vercel.");
     }
 
-    resolvedPdfBuffer = await generateFlyerPdf(normalizedContent);
+    resolvedPdfBuffer = await generateFlyerPdf(normalizedContent, definition.printPath);
   }
 
   const collection = await getFlyerCollection();
@@ -115,12 +136,20 @@ export async function createFlyerVersion(slug: string, content: unknown, pdfBuff
     const latestDocument = await getLatestFlyerDocument(slug);
     const nextVersion = (latestDocument?.version ?? 0) + 1;
     const uploadedPdf = await uploadFlyerPdf(slug, nextVersion, resolvedPdfBuffer);
+    const uploadedPages = pagePdfBuffers?.length
+      ? await Promise.all(
+          pagePdfBuffers.map((pageBuffer, index) =>
+            uploadFlyerPdf(slug, nextVersion, pageBuffer, index + 1),
+          ),
+        )
+      : undefined;
     const now = new Date().toISOString();
     const document: FlyerDocument = {
       slug,
       version: nextVersion,
       content: normalizedContent,
       pdf: uploadedPdf,
+      ...(uploadedPages ? { pages: uploadedPages } : {}),
       createdAt: now,
       updatedAt: now,
     };

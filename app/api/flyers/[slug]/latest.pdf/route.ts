@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getLatestFlyerDocument } from "../../../../lib/flyerDb";
 import { downloadFlyerPdf } from "../../../../lib/flyerService";
+import { selectFlyerPdf } from "../../../../lib/flyerPdfPage";
 
 export const runtime = "nodejs";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ slug: string }> },
 ) {
   try {
@@ -21,14 +22,22 @@ export async function GET(
       );
     }
 
-    const pdfBuffer = await downloadFlyerPdf(document.pdf);
+    const pageParam = new URL(request.url).searchParams.get("page");
+    const selection = selectFlyerPdf(document, pageParam);
+
+    if (!selection.ok) {
+      return NextResponse.json({ error: selection.error }, { status: 404 });
+    }
+
+    const pdfBuffer = await downloadFlyerPdf(selection.pdf);
+    const filename = `${document.slug}-flyer-latest${selection.filenameSuffix}.pdf`;
 
     return new Response(new Uint8Array(pdfBuffer), {
       headers: {
-        "Content-Type": document.pdf.contentType || "application/pdf",
+        "Content-Type": selection.pdf.contentType || "application/pdf",
         "Cache-Control": "no-store",
-        "Content-Disposition": `attachment; filename="${document.slug}-flyer-latest.pdf"`,
-        "Content-Length": String(document.pdf.size),
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "Content-Length": String(selection.pdf.size),
       },
     });
   } catch (error) {
