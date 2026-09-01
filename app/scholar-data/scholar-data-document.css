@@ -1,0 +1,823 @@
+.sd-document {
+  --sd-steel: #234ea9;
+  --sd-slate: #4a5f86;
+}
+
+/* Shared section headings ------------------------------------------------ */
+
+.sd-section-head {
+  padding: 0 0 2.4mm;
+}
+
+.sd-section-head-tight {
+  padding-bottom: 2mm;
+}
+
+.sd-section-head h2 {
+  margin: 0;
+  font-size: 12.6pt;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  color: var(--flyer-blue);
+}
+
+.sd-section-head h2::after {
+  content: "";
+  display: block;
+  width: 16mm;
+  height: 1mm;
+  margin-top: 1.5mm;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--flyer-red) 0%, rgba(178, 34, 52, 0.2) 100%);
+}
+
+.sd-section-head p {
+  max-width: 145mm;
+  margin: 1.8mm 0 0;
+  font-size: 7.8pt;
+  line-height: 1.4;
+  color: var(--sd-slate);
+}
+
+/* Front page: the pipeline ----------------------------------------------- */
+
+.sd-pipeline {
+  padding: 4mm 16mm 0;
+  flex: 0 0 auto;
+}
+
+.sd-rail {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5mm;
+  margin-bottom: 3.4mm;
+  padding: 0 1mm;
+}
+
+.sd-rail-line {
+  position: absolute;
+  top: 3.1mm;
+  left: 8mm;
+  right: 8mm;
+  height: 0.7mm;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--flyer-red) 0%,
+    var(--sd-steel) 45%,
+    var(--flyer-blue) 100%
+  );
+  opacity: 0.28;
+}
+
+.sd-rail-node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sd-rail-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.2mm;
+  height: 6.2mm;
+  border-radius: 999px;
+  background: linear-gradient(160deg, #12377f 0%, var(--flyer-blue) 100%);
+  border: 1.1mm solid #ffffff;
+  box-shadow: 0 3px 9px rgba(9, 29, 71, 0.22);
+  color: #ffffff;
+  font-size: 6.4pt;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sd-rail-node:first-child .sd-rail-dot {
+  background: linear-gradient(160deg, #c8324a 0%, var(--flyer-red) 100%);
+}
+
+.sd-rail-node:last-child .sd-rail-dot {
+  background: linear-gradient(160deg, #2f66cf 0%, var(--sd-steel) 100%);
+}
+
+.sd-rail-label {
+  margin-top: 1.3mm;
+  max-width: 26mm;
+  font-size: 5.7pt;
+  font-weight: 700;
+  line-height: 1.24;
+  color: var(--sd-slate);
+}
+
+.sd-stage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2mm 3.4mm;
+}
+
+.sd-stage-card {
+  position: relative;
+  padding: 2.9mm 3.4mm 3.1mm 4.6mm;
+  border: 1px solid var(--flyer-line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(241, 246, 255, 0.92));
+  box-shadow:
+    0 9px 22px rgba(9, 29, 71, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
+  overflow: hidden;
+}
+
+.sd-stage-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1.5mm;
+  background: var(--flyer-blue);
+}
+
+.sd-stage-card:nth-child(odd)::before {
+  background: var(--flyer-red);
+}
+
+.sd-stage-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3mm;
+  margin-bottom: 1.5mm;
+}
+
+.sd-stage-step {
+  font-size: 12.5pt;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: rgba(0, 40, 104, 0.16);
+}
+
+.sd-stage-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 7.2mm;
+  height: 7.2mm;
+  border-radius: 10px;
+  background: rgba(0, 40, 104, 0.07);
+  color: var(--flyer-blue);
+}
+
+.sd-stage-card:nth-child(odd) .sd-stage-icon {
+  background: rgba(178, 34, 52, 0.09);
+  color: var(--flyer-red);
+}
+
+.sd-stage-icon svg {
+  width: 4.8mm;
+  height: 4.8mm;
+}
+
+.sd-stage-card h3 {
+  margin: 0;
+  font-size: 8.3pt;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--flyer-blue);
+}
+
+.sd-stage-card p {
+  margin: 1.3mm 0 0;
+  font-size: 6.95pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+/* Back page: scholar groups ----------------------------------------------- */
+
+.sd-groups {
+  padding: 4mm 16mm 0;
+  flex: 0 0 auto;
+}
+
+.sd-group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3mm;
+}
+
+.sd-group-card {
+  display: flex;
+  flex-direction: column;
+  padding: 2.8mm 3mm 3mm;
+  border: 1px solid var(--flyer-line);
+  border-top: 2.6px solid var(--flyer-blue);
+  border-radius: 15px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(241, 246, 255, 0.9));
+  box-shadow:
+    0 9px 22px rgba(9, 29, 71, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.sd-group-card-contemporary {
+  border-top-color: var(--sd-steel);
+}
+
+.sd-group-card-legacy {
+  border-top-color: var(--flyer-blue);
+}
+
+.sd-group-card-legendary {
+  border-top-color: var(--flyer-red);
+}
+
+.sd-group-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.4mm;
+  height: 6.4mm;
+  margin-bottom: 1.5mm;
+  border-radius: 10px;
+  background: rgba(0, 40, 104, 0.07);
+  color: var(--flyer-blue);
+}
+
+.sd-group-card-legendary .sd-group-icon {
+  background: rgba(178, 34, 52, 0.09);
+  color: var(--flyer-red);
+}
+
+.sd-group-icon svg {
+  width: 4.2mm;
+  height: 4.2mm;
+}
+
+.sd-group-card strong {
+  display: block;
+  font-size: 8.6pt;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--flyer-blue);
+}
+
+.sd-group-tag {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 1.1mm;
+  padding: 0.8mm 1.6mm;
+  border-radius: 999px;
+  background: rgba(0, 40, 104, 0.08);
+  font-size: 5.8pt;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sd-slate);
+}
+
+.sd-group-card-legendary .sd-group-tag {
+  background: rgba(178, 34, 52, 0.1);
+  color: #8f1d2b;
+}
+
+.sd-group-detail {
+  margin: 1.4mm 0 0;
+  font-size: 6.6pt;
+  line-height: 1.32;
+  color: var(--flyer-ink);
+}
+
+.sd-group-criteria {
+  margin-top: 1.7mm;
+  padding: 1.8mm 2mm;
+  border-left: 1mm solid rgba(178, 34, 52, 0.4);
+  border-radius: 0 8px 8px 0;
+  background: rgba(178, 34, 52, 0.05);
+}
+
+.sd-group-criteria > span {
+  display: block;
+  font-size: 5.7pt;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f1d2b;
+}
+
+.sd-group-criteria p {
+  margin: 0.8mm 0 0;
+  font-size: 6.2pt;
+  line-height: 1.3;
+  font-style: italic;
+  color: var(--sd-slate);
+}
+
+/* Back page: classification placeholder ----------------------------------- */
+
+.sd-classification {
+  display: grid;
+  grid-template-columns: 14mm minmax(0, 1fr);
+  gap: 3.4mm;
+  align-items: start;
+  margin: 0 16mm;
+  margin-top: 4.5mm;
+  padding: 3.2mm 3.6mm;
+  border: 1.5px dashed rgba(178, 34, 52, 0.42);
+  border-radius: 14px;
+  background: rgba(178, 34, 52, 0.045);
+  flex: 0 0 auto;
+}
+
+.sd-classification-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.3mm 2mm;
+  border-radius: 999px;
+  background: var(--flyer-red);
+  color: #ffffff;
+  font-size: 6.1pt;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sd-classification-copy strong {
+  display: block;
+  font-size: 8.4pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #8f1d2b;
+}
+
+.sd-classification-copy p {
+  margin: 1.2mm 0 0;
+  font-size: 7pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+/* Back page: the hierarchy ----------------------------------------------- */
+
+.sd-hierarchy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5mm;
+  padding: 4.5mm 16mm 0;
+  flex: 0 0 auto;
+}
+
+.sd-tier {
+  display: grid;
+  grid-template-columns: 20mm minmax(0, 1fr);
+  gap: 3.4mm;
+  align-items: center;
+  min-width: 0;
+  padding: 2.1mm 3.2mm;
+  border: 1px solid var(--flyer-line);
+  border-left: 1.5mm solid var(--flyer-blue);
+  border-radius: 13px;
+  background: linear-gradient(90deg, rgba(0, 40, 104, 0.07) 0%, rgba(255, 255, 255, 0.96) 62%);
+  box-shadow: 0 7px 18px rgba(9, 29, 71, 0.05);
+}
+
+.sd-tier:nth-child(1) {
+  border-left-color: var(--flyer-red);
+  background: linear-gradient(90deg, rgba(178, 34, 52, 0.1) 0%, rgba(255, 255, 255, 0.96) 62%);
+}
+
+.sd-tier:nth-child(6) {
+  border-left-color: var(--flyer-red);
+  background: linear-gradient(90deg, rgba(178, 34, 52, 0.1) 0%, rgba(255, 255, 255, 0.96) 62%);
+}
+
+.sd-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.3mm 2mm;
+  border-radius: 999px;
+  background: var(--flyer-blue);
+  color: #ffffff;
+  font-size: 6.1pt;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sd-tier:nth-child(1) .sd-tier-badge,
+.sd-tier:nth-child(6) .sd-tier-badge {
+  background: var(--flyer-red);
+}
+
+.sd-tier-copy {
+  min-width: 0;
+}
+
+.sd-tier-copy strong {
+  display: block;
+  font-size: 7.9pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--flyer-blue);
+}
+
+.sd-tier-copy p {
+  margin: 0.7mm 0 0;
+  font-size: 6.9pt;
+  line-height: 1.32;
+  color: var(--flyer-ink);
+}
+
+/* Back page: safeguards -------------------------------------------------- */
+
+.sd-safeguards {
+  padding: 4mm 16mm 0;
+  flex: 0 0 auto;
+}
+
+.sd-safeguard-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.2mm 4.4mm;
+  margin: 0;
+  padding: 3.4mm 4.2mm;
+  list-style: none;
+  border: 1px solid rgba(0, 40, 104, 0.1);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(0, 40, 104, 0.04) 0%, rgba(255, 255, 255, 0.99) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.sd-safeguard-list li {
+  display: grid;
+  grid-template-columns: 6mm minmax(0, 1fr);
+  gap: 2.4mm;
+  align-items: start;
+  font-size: 7.1pt;
+  line-height: 1.32;
+}
+
+.sd-safeguard-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.6mm;
+  height: 5.6mm;
+  border-radius: 999px;
+  background: rgba(0, 40, 104, 0.1);
+  color: var(--flyer-blue);
+}
+
+.sd-safeguard-check svg {
+  width: 3.4mm;
+  height: 3.4mm;
+}
+
+/* Editor affordances ----------------------------------------------------- */
+
+.sd-document .flyer-edit-display {
+  text-align: inherit;
+}
+
+.sd-stage-card .flyer-edit-block,
+.sd-tier-copy .flyer-edit-block,
+.sd-section-head .flyer-edit-block {
+  width: 100%;
+}
+
+.sd-edit-card {
+  position: relative;
+}
+
+.sd-rail-node .flyer-edit-display {
+  font-size: inherit;
+}
+
+/* Page fit ---------------------------------------------------------------- */
+
+.sd-document .flyer-flag-bar {
+  flex: 0 0 auto;
+}
+
+.sd-document .flyer-header {
+  padding: 6.5mm 16mm 5.5mm;
+}
+
+.sd-document .flyer-band {
+  padding: 3.6mm 16mm;
+}
+
+.sd-document .flyer-band p {
+  font-size: 8.4pt;
+}
+
+.sd-document .flyer-stats {
+  gap: 2.2mm;
+  margin-top: 2.4mm;
+}
+
+.sd-document .flyer-stat {
+  padding: 2.4mm 3mm;
+}
+
+.sd-document .flyer-back-header {
+  padding: 7mm 16mm 7mm;
+}
+
+.sd-document .flyer-front-summary {
+  padding-top: 3.5mm;
+}
+
+.sd-document .flyer-value-strip div {
+  padding: 3mm 3mm 3.2mm;
+}
+
+.sd-document .flyer-back-grid {
+  padding-top: 5mm;
+}
+
+.sd-document .flyer-back-card {
+  min-height: 0;
+  padding: 4.4mm 4.6mm;
+}
+
+.sd-document .flyer-footer {
+  padding: 5mm 16mm 4.4mm;
+}
+
+/* Editor-only text classes ------------------------------------------------ */
+
+.sd-document .flyer-back-intro {
+  display: block;
+  max-width: 118mm;
+  margin-top: 2.5mm;
+  font-size: 8pt;
+  line-height: 1.46;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.sd-document .flyer-stat-label {
+  display: block;
+  font-size: 8.1pt;
+  font-weight: 800;
+  line-height: 1.18;
+}
+
+.sd-document .flyer-stat-detail {
+  display: block;
+  margin-top: 1mm;
+  font-size: 7.15pt;
+  line-height: 1.36;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.sd-heading {
+  display: block;
+  font-size: 12.6pt;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  color: var(--flyer-blue);
+}
+
+.sd-intro {
+  display: block;
+  margin-top: 1.8mm;
+  font-size: 7.8pt;
+  line-height: 1.4;
+  color: var(--sd-slate);
+}
+
+.sd-stage-title {
+  display: block;
+  font-size: 8.3pt;
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--flyer-blue);
+}
+
+.sd-stage-detail {
+  display: block;
+  margin-top: 1.3mm;
+  font-size: 6.95pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+.sd-tier-title {
+  display: block;
+  font-size: 8.2pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--flyer-blue);
+}
+
+.sd-tier-detail {
+  display: block;
+  margin-top: 0.9mm;
+  font-size: 7.2pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+.sd-safeguard-text {
+  display: block;
+  font-size: 7.4pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+/* Editor-only classes for the group and classification blocks -------------- */
+
+.sd-group-name {
+  display: block;
+  font-size: 9.4pt;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--flyer-blue);
+}
+
+.sd-group-label {
+  display: block;
+  margin-top: 1.4mm;
+  font-size: 5.8pt;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sd-slate);
+}
+
+.sd-group-body {
+  display: block;
+  margin-top: 1.8mm;
+  font-size: 6.9pt;
+  line-height: 1.36;
+  color: var(--flyer-ink);
+}
+
+.sd-group-criteria-label {
+  display: block;
+  font-size: 5.7pt;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8f1d2b;
+}
+
+.sd-group-criteria-text {
+  display: block;
+  margin-top: 1mm;
+  font-size: 6.5pt;
+  line-height: 1.34;
+  font-style: italic;
+  color: var(--sd-slate);
+}
+
+.sd-classification-title {
+  display: block;
+  font-size: 8.4pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #8f1d2b;
+}
+
+.sd-classification-body {
+  display: block;
+  margin-top: 1.4mm;
+  font-size: 7.3pt;
+  line-height: 1.4;
+  color: var(--flyer-ink);
+}
+
+/* Editor parity ----------------------------------------------------------- */
+/* The inline-edit affordances must not change layout, or the editable canvas
+   measures taller than the printed sheet and the footer is clipped away.
+   Borders become outlines (drawn outside the box) and the shared list padding
+   is dropped, so an edited page occupies exactly the printed height. */
+
+.sd-document .flyer-edit-display,
+.sd-document .flyer-edit-field {
+  border-width: 0;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+}
+
+.sd-document .flyer-edit-display:hover,
+.sd-document .flyer-edit-display:focus-visible,
+.sd-document .flyer-edit-field:hover {
+  outline-color: rgba(79, 124, 255, 0.4);
+}
+
+.sd-document .flyer-edit-field:focus {
+  outline-color: rgba(79, 124, 255, 0.62);
+}
+
+.sd-safeguard-list .flyer-edit-list-item {
+  padding: 0;
+}
+
+/* Editor type parity ------------------------------------------------------ */
+/* .flyer-edit-display sets `font: inherit`, which beats every type rule
+   declared above it in flyer-document.css. These restate the printed metrics
+   for the classes that lose that cascade, so an editable field is the same
+   size on screen as it is on paper. */
+
+.sd-document .flyer-eyebrow {
+  margin: 0 0 2.8mm;
+  font-size: 7.5pt;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.sd-document .flyer-tagline {
+  margin: 2.8mm 0 0;
+  font-size: 10.8pt;
+  font-weight: 700;
+  color: #d4dfff;
+}
+
+.sd-document .flyer-oneliner {
+  max-width: 118mm;
+  margin: 2.8mm 0 0;
+  font-size: 8.7pt;
+  font-weight: 700;
+  line-height: 1.48;
+}
+
+.sd-document .flyer-mission {
+  max-width: 118mm;
+  margin: 2.5mm 0 0;
+  font-size: 8pt;
+  line-height: 1.46;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.sd-document .flyer-hero-kicker,
+.sd-document .flyer-panel-kicker,
+.sd-document .flyer-footer-label {
+  display: block;
+  font-size: 7.9pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sd-document .flyer-hero-kicker {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.sd-document .flyer-panel-kicker {
+  margin: 0 0 1.8mm;
+  color: var(--flyer-red);
+}
+
+.sd-document .flyer-footer-label {
+  color: var(--flyer-blue);
+  letter-spacing: 0.16em;
+}
+
+.sd-document .flyer-callout {
+  padding: 3.2mm 3.4mm;
+  border-radius: 12px;
+  font-size: 7.8pt;
+  font-weight: 700;
+  line-height: 1.38;
+  background: rgba(178, 34, 52, 0.08);
+  color: #8f1d2b;
+}
+
+.sd-document .flyer-footer-note {
+  margin-top: 3mm;
+  padding-top: 2.6mm;
+  border-top: 1px solid rgba(0, 40, 104, 0.1);
+  font-size: 6.8pt;
+  line-height: 1.45;
+  color: rgba(16, 32, 63, 0.68);
+}
+
+/* `.flyer-value-strip div` is a descendant selector, so it also paints the
+   editor's inline-edit wrappers as cards. Neutralise them. */
+
+.sd-document .flyer-value-strip .flyer-edit-block {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}

@@ -5,10 +5,20 @@ import {
   flyerEditorPath,
   flyerEditorSessionCookieName,
   hasValidFlyerEditorSessionToken,
+  scholarDataEditorLoginPath,
+  scholarDataEditorPath,
 } from "./app/lib/flyerAuth";
 
-function buildLoginRedirectUrl(request: NextRequest) {
-  const loginUrl = new URL(flyerEditorLoginPath, request.url);
+function resolveEditorArea(pathname: string) {
+  if (pathname.startsWith(scholarDataEditorPath)) {
+    return { editorPath: scholarDataEditorPath, loginPath: scholarDataEditorLoginPath };
+  }
+
+  return { editorPath: flyerEditorPath, loginPath: flyerEditorLoginPath };
+}
+
+function buildLoginRedirectUrl(request: NextRequest, loginPath: string) {
+  const loginUrl = new URL(loginPath, request.url);
   const requestedPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
   loginUrl.searchParams.set("next", requestedPath);
   return loginUrl;
@@ -16,16 +26,18 @@ function buildLoginRedirectUrl(request: NextRequest) {
 
 export function proxy(request: NextRequest) {
   const sessionToken = request.cookies.get(flyerEditorSessionCookieName)?.value;
+  const { editorPath, loginPath } = resolveEditorArea(request.nextUrl.pathname);
+  const isLoginPath = request.nextUrl.pathname === loginPath;
 
   if (hasValidFlyerEditorSessionToken(sessionToken)) {
-    if (request.nextUrl.pathname === flyerEditorLoginPath) {
-      return NextResponse.redirect(new URL(flyerEditorPath, request.url));
+    if (isLoginPath) {
+      return NextResponse.redirect(new URL(editorPath, request.url));
     }
 
     return NextResponse.next();
   }
 
-  if (request.nextUrl.pathname === flyerEditorLoginPath) {
+  if (isLoginPath) {
     return NextResponse.next();
   }
 
@@ -38,9 +50,14 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  return NextResponse.redirect(buildLoginRedirectUrl(request));
+  return NextResponse.redirect(buildLoginRedirectUrl(request, loginPath));
 }
 
 export const config = {
-  matcher: ["/flyer/edit/:path*", "/flyer/edit-7b1c4e9d/:path*", "/api/flyers/:slug/versions"],
+  matcher: [
+    "/flyer/edit/:path*",
+    "/flyer/edit-7b1c4e9d/:path*",
+    "/scholar-data/edit/:path*",
+    "/api/flyers/:slug/versions",
+  ],
 };

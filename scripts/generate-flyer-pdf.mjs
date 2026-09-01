@@ -4,10 +4,19 @@ import path from "node:path";
 import { chromium } from "playwright";
 import handler from "serve-handler";
 
-const port = 3456;
+function readArg(name, fallback) {
+  const prefix = `--${name}=`;
+  const match = process.argv.find((value) => value.startsWith(prefix));
+  return match ? match.slice(prefix.length) : fallback;
+}
+
+const printRoute = readArg("route", "/flyer/print");
+const pdfName = readArg("pdf", "project-arch-flyer.pdf");
+const port = Number(readArg("port", "3456"));
+const isOptional = process.argv.includes("--optional");
 const siteRoot = path.resolve("out");
-const pdfPath = path.resolve("public/project-arch-flyer.pdf");
-const outPdfPath = path.resolve("out/project-arch-flyer.pdf");
+const pdfPath = path.resolve(`public/${pdfName}`);
+const outPdfPath = path.resolve(`out/${pdfName}`);
 const baseUrl = `http://127.0.0.1:${port}`;
 
 async function fileExists(targetPath) {
@@ -44,7 +53,7 @@ async function renderPdf() {
     browser = await chromium.launch();
     const page = await browser.newPage();
 
-    await page.goto(`${baseUrl}/flyer/print`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}${printRoute}`, { waitUntil: "networkidle" });
     await page.emulateMedia({ media: "print" });
     await page.pdf({
       path: pdfPath,
@@ -77,9 +86,13 @@ try {
     console.log(`Flyer PDF saved to ${pdfPath}`);
   }
 } catch (error) {
+  const reason = error instanceof Error ? error.message : String(error);
+
   if (await copyExistingPdf()) {
+    console.warn(`PDF generation failed; reused existing ${pdfPath}. ${reason}`);
+  } else if (isOptional) {
     console.warn(
-      `PDF generation failed; reused existing ${pdfPath}. ${error instanceof Error ? error.message : String(error)}`,
+      `Skipped optional PDF for ${printRoute}; the live download uses the published version. ${reason}`,
     );
   } else {
     throw error;

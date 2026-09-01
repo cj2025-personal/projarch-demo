@@ -1,5 +1,5 @@
 import { Collection, MongoClient } from "mongodb";
-import type { FlyerContent } from "../content/flyerContent";
+import type { AnyFlyerContent } from "./flyerRegistry";
 
 export type StoredFlyerPdf = {
   bucket: string;
@@ -12,8 +12,11 @@ export type StoredFlyerPdf = {
 export type FlyerDocument = {
   slug: string;
   version: number;
-  content: FlyerContent;
+  content: AnyFlyerContent;
   pdf: StoredFlyerPdf;
+  /** One single-page PDF per sheet. Absent on versions published before
+   *  per-page downloads existed. */
+  pages?: StoredFlyerPdf[];
   createdAt: string;
   updatedAt: string;
 };

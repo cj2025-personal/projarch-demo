@@ -2,6 +2,8 @@ import { timingSafeEqual } from "node:crypto";
 
 export const flyerEditorPath = "/flyer/edit";
 export const flyerEditorLoginPath = `${flyerEditorPath}/login`;
+export const scholarDataEditorPath = "/scholar-data/edit";
+export const scholarDataEditorLoginPath = `${scholarDataEditorPath}/login`;
 export const flyerEditorSessionCookieName = "flyer_editor_session";
 
 function safeEqual(left: string, right: string) {
